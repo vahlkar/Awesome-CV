@@ -89,6 +89,13 @@
   pdfkeywords={}
 }
 
+% Multicolumns
+\RequirePackage{multicol}
+% Needed for multilang
+\RequirePackage{polyglossia}
+% Needed for defining en/fr commands
+\RequirePackage{luacode}
+
 
 %-------------------------------------------------------------------------------
 %                Configuration for directory locations
@@ -731,4 +738,27 @@
       \\\\\\
       \letterenclosurestyle{\@letterenclname: \@letterenclosure} \\
     }
+}
+
+%-------------------------------------------------------------------------------
+%                Commands for multi languages
+%-------------------------------------------------------------------------------
+
+\directlua{%
+    if string.find("\jobname", "en") then
+        tex.print([[
+            \noexpand\setdefaultlanguage{english}
+        ]])
+    elseif string.find("\jobname", "fr") then
+        tex.print([[
+            \noexpand\setdefaultlanguage{french}
+        ]])
+    end
+}
+
+\newcommand{\en}[1]{%
+    \directlua{if string.find("\jobname", "en") then tex.sprint(\luastring{#1}) end}%
+}
+\newcommand{\fr}[1]{%
+    \directlua{if string.find("\jobname", "fr") then tex.sprint(\luastring{#1}) end}%
 }
